@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+               xmlns:s="library://ns.adobe.com/flex/spark" 
+               xmlns:mx="library://ns.adobe.com/flex/mx">
+	<s:BitmapImage source="@Embed(source='../images/milionerzy.png')" width="100%" height="100%" smooth="true" />
+	<s:Group horizontalCenter="0" verticalCenter="0">
+		<s:Rect width="100%" height="100%" radiusX="10" radiusY="10">
+			<s:fill>
+				<mx:SolidColor alpha="0.5" color="black" />
+			</s:fill>
+		</s:Rect>
+		<s:Group id="menu" horizontalCenter="0" verticalCenter="0">
+			<s:layout>
+				<s:VerticalLayout horizontalAlign="center" />
+			</s:layout>
+			<s:Label text="Najlepsze wyniki" />
+			<s:DataGroup id="wyniki">
+				<s:layout>
+					<s:VerticalLayout horizontalAlign="justify" gap="2" />
+				</s:layout>
+			<s:dataProvider>
+				<mx:XMLListCollection id="daneWyniki">
+					<fx:XMLList>
+						<item miejsce="01" gracz="Michał" wynik="6000" />
+						<item miejsce="02" gracz="" wynik="" />
+						<item miejsce="03" gracz="" wynik="" />
+						<item miejsce="04" gracz="" wynik="" />
+						<item miejsce="05" gracz="" wynik="" />
+						<item miejsce="06" gracz="" wynik="" />
+						<item miejsce="07" gracz="" wynik="" />
+						<item miejsce="08" gracz="" wynik="" />
+						<item miejsce="09" gracz="" wynik="" />
+						<item miejsce="10" gracz="" wynik="" />
+						<item miejsce="11" gracz="" wynik="" />
+						<item miejsce="12" gracz="" wynik="" />
+						<item miejsce="13" gracz="" wynik="" />
+						<item miejsce="14" gracz="" wynik="" />
+						<item miejsce="15" gracz="" wynik="" />
+					</fx:XMLList>
+				</mx:XMLListCollection>
+			</s:dataProvider>
+				<s:itemRenderer>
+					<fx:Component>
+						<s:ItemRenderer autoDrawBackground="false">
+							<s:Rect width="250" height="20">
+								<s:fill>
+									<mx:SolidColor color="#FF7F00" />
+								</s:fill>
+							</s:Rect>
+							<s:HGroup gap="60" top="3">
+								<s:Label text="{data.@miejsce}" color="0xFFFFFF" fontWeight="bold" width="20" textAlign="right" fontSize="16" />
+								<s:Label text="{data.@gracz}" color="0x000000" fontWeight="bold" fontSize="16" />
+								<s:Label text="{data.@wynik}" color="blue" fontWeight="bold" fontSize="16" />
+							</s:HGroup>
+						</s:ItemRenderer>
+					</fx:Component>
+				</s:itemRenderer>
+			</s:DataGroup>
+			<s:Label text="Powrót do menu" click="parentDocument.parent.currentState = 'glowny'" />
+		</s:Group>
+	</s:Group>
+		
+</s:Group>

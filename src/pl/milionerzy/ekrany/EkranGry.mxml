@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+               xmlns:s="library://ns.adobe.com/flex/spark" 
+               xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:mil="pl.milionerzy.*" initialize="onInitialize()" enterFrame="onEnterFrame(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.greensock.TweenLite;
+			import com.greensock.TweenMax;
+			import com.greensock.easing.Linear;
+			
+			import flash.text.engine.FontWeight;
+			import flash.utils.getTimer;
+			
+			import flashx.textLayout.compose.StandardFlowComposer;
+			import flashx.textLayout.container.ContainerController;
+			import flashx.textLayout.elements.FlowElement;
+			import flashx.textLayout.elements.ParagraphElement;
+			import flashx.textLayout.elements.SpanElement;
+			
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			
+			import pl.milionerzy.GeneratorPytan;
+			import pl.milionerzy.Pytanie;
+			
+			[Embed(source="../Czat.xml", mimeType="application/octet-stream")]
+			public var Czat:Class;
+			
+			public var generator:GeneratorPytan;
+			public var pyt:Pytanie;
+			public var aktualnePytanie:uint = 1;
+			public var wypowiedzi:XMLList;
+			
+			private var obecnaWypowiedz:SpanElement;
+			private var obecnyTekst:String;
+			private var etap:int;
+			
+			private var rozmowa:Boolean;
+			
+			private const predkoscPisania:int = 80;
+			
+			private var czasOstatniejLitery:int;
+			
+			private var zdecydowanie:Number;
+			
+			private var nastepnyEtapCzatu:uint;
+			
+			public function onPhone():void
+			{
+				TweenLite.to(phonePanel, 0.4, {alpha: 1});
+				TweenLite.to(defaultPanel, 0.4, {alpha: 0});
+				
+				licznik.text = "30";
+				TweenMax.to(licznik, 30, {text: 0, roundProps: ["text"], ease: Linear.easeOut});
+				
+				rozmowa = true;
+				etap = 0;
+				czasOstatniejLitery = getTimer();
+				
+				const tabPewnosci:Array = [0.1, 0.11, 0.13, 0.16 /* GRANICA */, 0.25, 0.35, 0.45, 0.55, 0.75, /* GRANICA */ 1.4, 1.7, 1.95, 2.1, 3.0, 3.5];
+				zdecydowanie = Math.pow(Math.random(), tabPewnosci[aktualnePytanie-1]);
+				
+				phone.enabled = false;
+			}
+			
+			public function onPublicc():void
+			{
+				publicc.enabled = false;
+			}
+			
+			public function onHalfToHalf():void
+			{
+				var odp:Array = [odpA, odpB, odpC, odpD];
+				var tab:Array = [];
+				
+				while (tab.length < 2)
+				{
+					var r:int = Math.random() * 4;
+					
+					if (tab.indexOf(r) != -1)
+						continue;
+					
+					if (r == pyt.poprawna)
+						continue;
+					
+					tab.push(r);
+				}
+				
+				odp[tab[0]].currentState = 'disabled';
+				odp[tab[1]].currentState = 'disabled';
+				
+				halfOnHalf.enabled = false;
+			}
+			
+			public function onInitialize():void
+			{
+				generator = new GeneratorPytan();
+				
+				wypowiedzi = new XML(new Czat()).wypowiedz;
+			}
+			
+			public function wylosujPytanie():void
+			{
+				pyt = generator.wylosujPytanie(aktualnePytanie);
+				tekstPytania.text = pyt.tekst;
+				odpA.odpowiedz = pyt.odpowiedzi[0];
+				odpB.odpowiedz = pyt.odpowiedzi[1];
+				odpC.odpowiedz = pyt.odpowiedzi[2];
+				odpD.odpowiedz = pyt.odpowiedzi[3];
+				
+				daneKwot.source.(@kid == aktualnePytanie)[0].@obecny = true;
+				if(aktualnePytanie > 1)
+					daneKwot.source.(@kid == (aktualnePytanie-1))[0].@obecny = false;
+			}
+			
+			public function onOdpowiedz(numer:uint):void
+			{
+				var odp:Array = [odpA, odpB, odpC, odpD];
+				
+				for (var i:int = 0; i < 4; ++i)
+					if((odp[i] as pl.milionerzy.Odpowiedz).currentState == "disabled")
+						(odp[i] as pl.milionerzy.Odpowiedz).currentState = "normal";
+				
+				if (numer == pyt.poprawna)
+				{
+					aktualnePytanie = aktualnePytanie + 1;
+					wylosujPytanie();
+				}
+				else if (numer != pyt.poprawna)
+				{
+					Alert.show("Błędna odpowiedź", "UWAGA", 4, null, onDialogOk);
+				}
+			}
+			
+			public function onDialogOk(o:Object):void
+			{
+				parentDocument.parent.currentState = 'glowny';	
+			}
+			
+			public function reset():void
+			{
+				halfOnHalf.enabled = true;
+				phone.enabled = true;
+				publicc.enabled = true;
+				
+				aktualnePytanie = 1;
+				
+				for(var i:int = 1; i < 16; ++i)
+					daneKwot.source.(@kid == i.toString())[0].@obecny = false;
+				
+				//for each(var xml:XML in daneKwot.source)
+				//	xml.@obecny = false;
+				
+				wylosujPytanie();
+			}
+			
+			protected function onEnterFrame(event:Event):void
+			{
+				if(rozmowa == false)
+					return;
+				
+				if(obecnaWypowiedz == null && getTimer() >= nastepnyEtapCzatu)
+				{
+					if(etap == 0)
+					{
+						var obecne:XMLList = wypowiedzi.(@etap == "0");
+						
+						var index:int = Math.random() * obecne.length();
+						
+						obecnyTekst = obecne[index].toString();
+						
+						var p:ParagraphElement = new ParagraphElement();
+						
+						var nazwa:SpanElement = new SpanElement();
+						nazwa.fontWeight = FontWeight.BOLD;
+						nazwa.color = 0xFF0000;
+						nazwa.text = "Gracz:";
+						
+						obecnaWypowiedz = new SpanElement();
+						obecnaWypowiedz.color = 0xFFFFFF;
+						obecnaWypowiedz.text = " ";
+						
+						p.addChild(nazwa);
+						p.addChild(obecnaWypowiedz);
+						
+						czat.addChild(p);
+					}
+					else if(etap == 1)
+					{
+						obecnyTekst = pyt.tekst;
+						
+						var p:ParagraphElement = new ParagraphElement();
+						
+						var nazwa:SpanElement = new SpanElement();
+						nazwa.fontWeight = FontWeight.BOLD;
+						nazwa.color = 0xFF0000;
+						nazwa.text = "Gracz:";
+						
+						obecnaWypowiedz = new SpanElement();
+						obecnaWypowiedz.color = 0xFFFFFF;
+						obecnaWypowiedz.text = " ";
+						
+						p.addChild(nazwa);
+						p.addChild(obecnaWypowiedz);
+						
+						czat.addChild(p);
+					}
+					else if(etap == 2)
+					{
+						var obecne:XMLList = wypowiedzi.(@etap == "2");
+						
+						obecne = obecne.(Number(@zdecydowanie) > zdecydowanie*100-10 && Number(@zdecydowanie) < zdecydowanie*100+10);
+						
+						var index:int = Math.random() * obecne.length();
+						
+						obecnyTekst = obecne[index].toString();
+						
+						var p:ParagraphElement = new ParagraphElement();
+						
+						var nazwa:SpanElement = new SpanElement();
+						nazwa.fontWeight = FontWeight.BOLD;
+						nazwa.color = 0xFF0000;
+						nazwa.text = "Przyjaciel:";
+						
+						obecnaWypowiedz = new SpanElement();
+						obecnaWypowiedz.color = 0xFFFFFF;
+						obecnaWypowiedz.text = " ";
+						
+						p.addChild(nazwa);
+						p.addChild(obecnaWypowiedz);
+						
+						czat.addChild(p);
+					}
+					else if(etap == 3)
+					{
+						var obecne:XMLList = wypowiedzi.(@etap == "3");
+						
+						obecne = obecne.(Number(@zdecydowanie) > zdecydowanie*100-10 && Number(@zdecydowanie) < zdecydowanie*100+10);
+						
+						var index:int = Math.random() * obecne.length();
+						
+						var odpowiedzPrzyjaciela:String;
+						
+						if(Math.random() < zdecydowanie)
+							odpowiedzPrzyjaciela = ["A", "B", "C", "D"][pyt.poprawna];
+						else
+						{
+							var num:int;
+							do
+							{
+								num = Math.random() * 4;
+							}
+							while(num == pyt.poprawna);
+							
+							odpowiedzPrzyjaciela = ["A", "B", "C", "D"][num];
+						}
+						
+						obecnyTekst = obecne[index].toString();
+						obecnyTekst = obecnyTekst.replace("%ODP%", odpowiedzPrzyjaciela);
+						
+						var p:ParagraphElement = new ParagraphElement();
+						
+						var nazwa:SpanElement = new SpanElement();
+						nazwa.fontWeight = FontWeight.BOLD;
+						nazwa.color = 0xFF0000;
+						nazwa.text = "Przyjaciel:";
+						
+						obecnaWypowiedz = new SpanElement();
+						obecnaWypowiedz.color = 0xFFFFFF;
+						obecnaWypowiedz.text = " ";
+						
+						p.addChild(nazwa);
+						p.addChild(obecnaWypowiedz);
+						
+						czat.addChild(p);
+					}
+				}
+				
+				if(obecnaWypowiedz != null && czasOstatniejLitery + predkoscPisania <= getTimer())
+				{
+					obecnaWypowiedz.replaceText(obecnaWypowiedz.textLength, obecnaWypowiedz.textLength, obecnyTekst.substr(0, 1));
+					//obecnaWypowiedz.text = obecnaWypowiedz.text + obecnyTekst.substr(0, 1);
+					obecnyTekst = obecnyTekst.substr(1);
+					
+					czatText.width = 200;
+					
+					czasOstatniejLitery = getTimer();
+					
+					if(obecnyTekst.length == 0)
+					{
+						if(etap == 0)
+							nastepnyEtapCzatu = 0;
+						else if(etap == 1)
+							nastepnyEtapCzatu = getTimer() + 300 + Math.pow(Math.random(), zdecydowanie * 2) * 5000;
+						else
+							nastepnyEtapCzatu = getTimer() + 100 + Math.pow(Math.random(), zdecydowanie * 2) * 4000;
+						
+						if(etap == 3)
+							etap = etap + 1;
+						
+						if(etap == 2 && Math.pow(Math.random(), zdecydowanie * 3) < 0.5)
+							etap = etap + 1;
+						
+						if(etap <= 1)
+							etap = etap + 1;
+						obecnaWypowiedz = null;
+						
+						
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<s:VGroup width="100%" height="100%" horizontalAlign="center">
+		<s:BitmapImage source="@Embed(source='../images/milionerzylogo.png')" height="120" smooth="true" scaleMode="letterbox" />
+		<s:HGroup width="100%" height="100%">
+			<s:VGroup width="100%" height="100%">
+				<s:Group id="pytanie" width="100%" height="100%">
+					<s:Rect width="100%" height="100%">
+						<s:fill>
+							<mx:SolidColor color="black" alpha="0.3" />
+						</s:fill>
+					</s:Rect>
+					<s:Label id="tekstPytania" horizontalCenter="0" verticalCenter="0" color="white" fontSize="15" fontWeight="bold" />
+				</s:Group>
+				<s:Group id="odpowiedzi" width="100%" height="150">
+					<s:HGroup gap="0">
+						<s:VGroup>
+							<mil:Odpowiedz id="odpA" litera="A" click="onOdpowiedz(0)" />
+							<mil:Odpowiedz id="odpC" litera="C" click="onOdpowiedz(2)" />
+						</s:VGroup>
+						<s:VGroup>
+							<mil:Odpowiedz id="odpB" litera="B" click="onOdpowiedz(1)" />
+							<mil:Odpowiedz id="odpD" litera="D" click="onOdpowiedz(3)" />
+						</s:VGroup>
+					</s:HGroup>
+				</s:Group>
+			</s:VGroup>
+			<s:Group width="270" height="100%">
+				<s:Group id="phonePanel" width="100%" height="100%" alpha="0">
+					<s:Group>
+						<s:Ellipse width="50" height="50">
+							<s:stroke>
+								<s:SolidColorStroke color="yellow" weight="5" />
+							</s:stroke>
+						</s:Ellipse>
+						
+						<s:Label id="licznik" fontSize="24" color="white" horizontalCenter="-2" verticalCenter="0" />
+					</s:Group>
+					
+					<s:RichText id="czatText" left="20" right="20" top="65">
+						<s:textFlow>
+							<s:TextFlow id="czat" />
+						</s:textFlow>
+					</s:RichText>
+				</s:Group>
+				<s:VGroup id="defaultPanel" width="100%" height="100%" horizontalAlign="center" gap="20">
+					<s:HGroup id="kolaRatunkowe">
+						<s:Button id="halfOnHalf" buttonDown="onHalfToHalf()" />
+						<s:Button id="phone" buttonDown="onPhone()"/>
+						<s:Button id="publicc" />
+					</s:HGroup>
+					<s:DataGroup id="kwoty">
+						<s:layout>
+							<s:VerticalLayout horizontalAlign="justify" gap="2" />
+						</s:layout>
+						<s:dataProvider>
+							<mx:XMLListCollection id="daneKwot">
+								<fx:XMLList>
+									<item kid="15" kwota="1 000 000 zł" gwarantowana="true" />
+									<item kid="14" kwota="500 000 zł" />
+									<item kid="13" kwota="250 000 zł" />
+									<item kid="12" kwota="125 000 zł" />
+									<item kid="11" kwota="64 000 zł" />
+									<item kid="10" kwota="32 000 zł" gwarantowana="true" />
+									<item kid="9" kwota="16 000 zł" />
+									<item kid="8" kwota="8 000 zł" />
+									<item kid="7" kwota="4 000 zł" />
+									<item kid="6" kwota="2 000 zł" />
+									<item kid="5" kwota="1 000 zł" gwarantowana="true" />
+									<item kid="4" kwota="500 zł" />
+									<item kid="3" kwota="300 zł" />
+									<item kid="2" kwota="200 zł" />
+									<item kid="1" kwota="100 zł" />
+								</fx:XMLList>
+							</mx:XMLListCollection>
+						</s:dataProvider>
+						<s:itemRenderer>
+							<fx:Component>
+								<s:ItemRenderer autoDrawBackground="false">
+									<s:Rect width="100%" height="100%" visible="{data.@obecny == 'true'}">
+										<s:fill>
+											<mx:SolidColor color="#FF7F00" />
+										</s:fill>
+									</s:Rect>
+									
+									<s:HGroup gap="10" top="3">
+										<s:Label text="{data.@kid}" color="{data.@obecny == 'true' ? 0x000000 : (data.@gwarantowana == 'true' ? 0xFFFFFF : 0xFF7F00)}" fontWeight="bold" width="34" textAlign="right" fontSize="20" />
+										<s:Label text="{data.@kwota}" color="{data.@obecny == 'true' ? 0x000000 : (data.@gwarantowana == 'true' ? 0xFFFFFF : 0xFF7F00)}" fontWeight="bold" fontSize="20" />
+									</s:HGroup>
+								</s:ItemRenderer>
+							</fx:Component>
+						</s:itemRenderer>
+					</s:DataGroup>
+				</s:VGroup>
+			</s:Group>
+		</s:HGroup>
+	</s:VGroup>
+</s:Group>

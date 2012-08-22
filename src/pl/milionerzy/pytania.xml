@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pytania>
+	<pytanie tekst="Jakiego koloru jest Mars?" kategoria="1">
+		<odp correct="true">Czerwony</odp>
+		<odp>Zielony</odp>
+		<odp>Różowy</odp>
+		<odp>Żółty</odp>
+		<odp>Jaskrawoszarozielony</odp>
+	</pytanie>
+	<pytanie tekst="Jakiego koloru jest Wenus?" kategoria="6">
+		<odp correct="true">Biały</odp>
+		<odp>Zielony</odp>
+		<odp>Różowy</odp>
+		<odp>Żółty</odp>
+		<odp>Jaskrawoszarozielony</odp>
+	</pytanie>
+	<pytanie tekst="Co jest wynikiem dodawania?" kategoria="1">
+		<odp correct="true">Suma</odp>
+		<odp>Iloczyn</odp>
+		<odp>Iloraz</odp>
+		<odp>Różnica</odp>
+	</pytanie>
+	<pytanie tekst="7?" kategoria="7">
+		<odp correct="true">7</odp>
+		<odp>1</odp>
+		<odp>2</odp>
+		<odp>3</odp>
+	</pytanie>
+	<pytanie tekst="5?" kategoria="5">
+		<odp correct="true">5</odp>
+		<odp>1</odp>
+		<odp>2</odp>
+		<odp>3</odp>
+	</pytanie>
+	<pytanie tekst="4?" kategoria="4">
+		<odp correct="true">4</odp>
+		<odp>1</odp>
+		<odp>2</odp>
+		<odp>3</odp>
+	</pytanie>
+	<pytanie tekst="3?" kategoria="3">
+		<odp correct="true">3</odp>
+		<odp>1</odp>
+		<odp>2</odp>
+		<odp>4</odp>
+	</pytanie>
+	<pytanie tekst="2?" kategoria="2">
+		<odp correct="true">2</odp>
+		<odp>1</odp>
+		<odp>4</odp>
+		<odp>3</odp>
+	</pytanie>
+	<pytanie tekst="10?" kategoria="10">
+		<odp correct="true">10</odp>
+		<odp>1</odp>
+		<odp>2</odp>
+		<odp>3</odp>
+	</pytanie>
+	<pytanie tekst="9?" kategoria="9">
+		<odp correct="true">9</odp>
+		<odp>1</odp>
+		<odp>2</odp>
+		<odp>3</odp>
+	</pytanie>
+	<pytanie tekst="8?" kategoria="8">
+		<odp correct="true">8</odp>
+		<odp>1</odp>
+		<odp>2</odp>
+		<odp>3</odp>
+	</pytanie>
+</pytania>

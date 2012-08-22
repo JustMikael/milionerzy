@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+               xmlns:s="library://ns.adobe.com/flex/spark" 
+               xmlns:mx="library://ns.adobe.com/flex/mx" buttonMode="true" mouseEnabled.disabled="false" mouseEnabled.enabled="true" mouseChildren="false" currentState="normal" mouseOver="currentState = 'hover'" mouseOut="currentState = 'normal'">
+	<fx:Script>
+		<![CDATA[
+		[Bindable]
+		public var litera:String;
+		
+		[Bindable]
+		public var odpowiedz:String;
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<mx:State name="normal" stateGroups="enabled,up" />
+		<mx:State name="hover" stateGroups="enabled" />
+		<mx:State name="disabled" stateGroups="up" />
+	</s:states>
+	
+	<s:BitmapImage source.up="@Embed(source='images/Odpowiedz.png')" source.hover="@Embed(source='images/OdpowiedzHover.png')" />
+	<s:HGroup verticalCenter="0" left="45" gap="20">
+		<s:Label text="{litera}" color="#FF7F00" fontSize="18" />
+		<s:Label text.enabled="{odpowiedz}" text.disabled="" color="white" fontSize="14" />
+	</s:HGroup>
+
+</s:Group>

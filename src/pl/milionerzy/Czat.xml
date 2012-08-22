@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wypowiedzi>
+	<wypowiedz etap="0">Cześć.</wypowiedz>
+	<wypowiedz etap="0">Witaj.</wypowiedz>
+	<wypowiedz etap="0">Witam Ciebie.</wypowiedz>
+	<wypowiedz etap="0">Cześć stary.</wypowiedz>
+	
+	<wypowiedz etap="2" zdecydowanie="10">Nie mam pojęcia.</wypowiedz>
+	<wypowiedz etap="2" zdecydowanie="20">Nigdy o tym nie słyszałem.</wypowiedz>
+	<wypowiedz etap="2" zdecydowanie="30">Kurczę, nie wiem.</wypowiedz>
+	<wypowiedz etap="2" zdecydowanie="40">Coś mi się kojarzy.</wypowiedz>
+	<wypowiedz etap="2" zdecydowanie="50">Słyszałem coś na ten temat.</wypowiedz>
+	<wypowiedz etap="2" zdecydowanie="60">Czytałem coś o tym jakiś czas temu.</wypowiedz>
+	<wypowiedz etap="2" zdecydowanie="70">Raczej będę w stanie Ci pomóc.</wypowiedz>
+	<wypowiedz etap="2" zdecydowanie="80">To raczej proste.</wypowiedz>
+	<wypowiedz etap="2" zdecydowanie="90">Akurat trafiłeś na pytanie z mojej dziedziny.</wypowiedz>
+	<wypowiedz etap="2" zdecydowanie="100">To bardzo proste pytanie.</wypowiedz>
+	
+	<wypowiedz etap="3" zdecydowanie="10">Przepraszam, ale musisz sobie poradzić sam.</wypowiedz>
+	<wypowiedz etap="3" zdecydowanie="100">Poprawna odpowiedź to %ODP%.</wypowiedz>
+	<wypowiedz etap="3" zdecydowanie="20">Wydaje mi się, że to %ODP%.</wypowiedz>
+	<wypowiedz etap="3" zdecydowanie="50">Wydaje mi się, że to %ODP%.</wypowiedz>
+	<wypowiedz etap="3" zdecydowanie="30">Wydaje mi się, że to %ODP%.</wypowiedz>
+	<wypowiedz etap="3" zdecydowanie="40">Wydaje mi się, że to %ODP%.</wypowiedz>
+	<wypowiedz etap="3" zdecydowanie="60">Wydaje mi się, że to %ODP%.</wypowiedz>
+	<wypowiedz etap="3" zdecydowanie="70">Poprawna odpowiedź to %ODP%.</wypowiedz>
+	<wypowiedz etap="3" zdecydowanie="80">Poprawna odpowiedź to %ODP%.</wypowiedz>
+	<wypowiedz etap="3" zdecydowanie="90">Poprawna odpowiedź to %ODP%.</wypowiedz>
+</wypowiedzi>

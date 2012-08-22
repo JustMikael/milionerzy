@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group	   xmlns:fx="http://ns.adobe.com/mxml/2009" 
+               xmlns:s="library://ns.adobe.com/flex/spark" 
+               xmlns:mx="library://ns.adobe.com/flex/mx">
+	<s:BitmapImage source="@Embed(source='../images/milionerzy.png')" width="100%" height="100%" smooth="true" />
+	<s:Group horizontalCenter="0" verticalCenter="0">
+		<s:Rect width="200" height="100" radiusX="10" radiusY="10">
+			<s:fill>
+				<mx:SolidColor alpha="0.5" color="black" />
+			</s:fill>
+		</s:Rect>
+		<s:Group id="menu" horizontalCenter="0" verticalCenter="0">
+			<s:layout>
+				<s:VerticalLayout horizontalAlign="center" />
+			</s:layout>
+			<s:Label text="Nowa gra" click="parentDocument.parent.currentState = 'gra'" />
+			<s:Label text="Najlepsze wyniki" click="parentDocument.parent.currentState = 'wyniki'" />
+			<s:Label text="Zasady" click="parentDocument.parent.currentState = 'zasady'" />
+		</s:Group>
+	</s:Group>
+	
+</s:Group>
